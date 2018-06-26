@@ -24,13 +24,13 @@
                 <td>
                     {% if not todo.is_completed %}
                         <form method="post" action="{{ url_for('todo_is_completed', id=todo.id) }}">
-                            <button type="submit" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-ok glyphicon-white"></span></button>
+                            <button type="submit" class="btn btn-xs btn-info" onclick="return confirm('Mark the task completed?')"><span class="glyphicon glyphicon-ok glyphicon-white"></span></button>
                         </form>
                     {% endif %}
                 </td>
                 <td>
                     <form method="post" action="{{ url_for('todo_delete', id=todo.id) }}">
-                        <button type="submit" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-remove glyphicon-white"></span></button>
+                        <button type="submit" class="btn btn-xs btn-danger" onclick="return confirm('Do you want to delete todo with id: {{ todo.id }}?')"><span class="glyphicon glyphicon-remove glyphicon-white"></span></button>
                     </form>
                 </td>
             </tr>
@@ -38,10 +38,10 @@
         <tr>
             <form method="post" action="{{ url_for('todos_POST') }}">
                 <td colspan="3">
-                    <input type="textbox" name="description" class="small-6 small-center" placeholder="Description..." required="true">
+                    <input type="textbox"  id="desc" name="description" class="small-6 small-center" placeholder="Description..." required="true">
                 </td>
                 <td>
-                    <button type="submit" class="btn btn-sm btn-primary">Add</button>
+                    <button type="submit" class="btn btn-sm btn-primary" onclick="return confirm('Do you want to add a new task with description: '+document.getElementById('desc').value.toString()+ ' ?')">Add</button>
                 </td>
             </form>
         </tr>
