@@ -8,27 +8,30 @@ from docopt import docopt
 import subprocess
 import os
 
-from alayatodo import app
+from alayatodo import app, db
+from alayatodo.models import Todo,Users
 
 
-def _run_sql(filename):
-    try:
-        subprocess.check_output(
-            "sqlite3 %s < %s" % (app.config['DATABASE'], filename),
-            stderr=subprocess.STDOUT,
-            shell=True
-        )
-    except subprocess.CalledProcessError, ex:
-        print ex.output
-        os.exit(1)
+def _create_default_user():
+    user = Users(username='admin1', password='admin1')
+    db.session.add(user)
+    db.session.commit()
 
+def _create_dummy_todos():
+    user = Users.query.get(1)
+    for i in range(15):
+        t = Todo(description='randomDescription'+str(i), users=user)
+        db.session.add(t)
+    db.session.commit()
 
 if __name__ == '__main__':
     args = docopt(__doc__)
     if args['initdb']:
-        _run_sql('resources/database.sql')
-        _run_sql('resources/fixtures.sql')
-        _run_sql('resources/migration_001.sql')
+        os.system('flask db init')
+        os.system('flask db migrate -m "Initial Migrations"')
+        os.system('flask db upgrade')
+        _create_default_user()
+        _create_dummy_todos()
         print "AlayaTodo: Database initialized."
     else:
         app.run(use_reloader=True)
