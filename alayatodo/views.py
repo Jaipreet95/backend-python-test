@@ -1,6 +1,7 @@
 from alayatodo import app
 from flask import (
     g,
+    jsonify,
     redirect,
     render_template,
     request,
@@ -81,6 +82,18 @@ def todo_is_completed(id):
     g.db.execute("UPDATE todos SET is_completed=1 WHERE id ='%s'" % id)
     g.db.commit()
     return redirect('/todo')
+
+@app.route('/todo/<id>/json', methods=['GET'])
+@app.route('/todo/<id>/json/', methods=['GET'])
+def todo_json(id):
+    if not session.get('logged_in'):
+        return redirect('/login')
+    cur = g.db.execute("SELECT * FROM todos WHERE  id ='%s'" % id)
+    todos = cur.fetchone()
+    todo = {}
+    for index,val in enumerate(todos):
+        todo[cur.description[index][0]] = val
+    return jsonify(todo)
 
 @app.route('/todo/delete/<id>', methods=['POST'])
 def todo_delete(id):
