@@ -3,7 +3,8 @@ from flask import (
     redirect,
     render_template,
     request,
-    session
+    session,
+    url_for
     )
 from alayatodo import app,db
 from .models import Users, Todo
@@ -52,8 +53,12 @@ def todo(id):
 def todos():
     if not session.get('logged_in'):
         return redirect('/login')
-    todos = Todo.query.all()
-    return render_template('todos.html', todos=todos)
+    # todos = Todo.query.all()
+    page = request.args.get('page', 1, type=int)
+    todos = Todo.query.paginate(page,5,False)
+    next_url = url_for('todos', page=todos.next_num) if todos.has_next else None
+    prev_url = url_for('todos', page=todos.prev_num) if todos.has_prev else None
+    return render_template('todos.html', todos=todos.items,next_url=next_url,prev_url=prev_url)
 
 
 @app.route('/todo', methods=['POST'])

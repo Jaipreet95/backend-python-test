@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="col-md-4 col-md-offset-4">
+<div class="col-md-6 col-md-offset-2">
     <h1>Todo List:</h1>
     <table class="table table-striped">
         <th>#</th><th>User</th><th>Description</th><th>Completed</th><th>Mark Complete</th><th>Delete</th>
@@ -35,9 +35,21 @@
                 </td>
             </tr>
         {% endfor %}
+    <div class="flex">
+        <div class="pull-left">
+            {% if prev_url %}
+            <a href="{{ prev_url }}">Previous</a>
+            {% endif %}
+        </div>
+        <div class="pull-right">
+            {% if next_url %}
+            <a href="{{ next_url }}">Next</a>
+            {% endif %}
+        </div>
+    </div>
         <tr>
             <form method="post" action="{{ url_for('todos_POST') }}">
-                <td colspan="3">
+                <td colspan="5">
                     <input type="textbox"  id="desc" name="description" class="small-6 small-center" placeholder="Description..." required="true">
                 </td>
                 <td>
